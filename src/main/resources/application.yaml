@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: dev
+#    send free sms from https://textbelt.com/ github=> https://github.com/typpo/textbelt
+#todo:: make application configurable for MongoDB,MySQL,PostgreSQL
+#todo:: provide configurable properties file for jar access

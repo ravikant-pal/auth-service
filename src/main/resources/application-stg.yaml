@@ -1,0 +1,52 @@
+spring:
+  # ===============================
+  # ===== Datasource config =======
+  # ===============================
+  data:
+    mongodb:
+      uri: mongodb+srv://auth-user:9H1e1z3IiqPGUdZH@authy.ihkj0ui.mongodb.net/?retryWrites=true&w=majority
+      database: authy
+  # ===============================
+  # ========= Mail config =========
+  # ===============================
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: ravikantpal010@gmail.com
+    password: ywuwtqakpobuusyi
+    port: 587
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# ===============================
+# ======== Swagger config =======
+# ===============================
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    operations-sorter: alpha
+    tagsSorter: alpha
+    enabled: 'true'
+  packages-to-scan: com.triton.auth
+
+# ===============================
+# ========  Utils config ========
+# ===============================
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-exception: false
+
+authy:
+  jwt:
+    expiration-in-ms: 30000 #1000 ==> 1 sec
+    refresh:
+      expiration-in-ms: 60000
+  cookie:
+    max-age-in-days: 10
