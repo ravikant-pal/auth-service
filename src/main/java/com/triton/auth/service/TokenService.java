@@ -1,11 +1,8 @@
 package com.triton.auth.service;
 
 import com.triton.auth.dto.helper.Tokens;
-import com.triton.auth.model.Role;
-import com.triton.auth.model.User;
 
 import java.util.Map;
-import java.util.Set;
 
 public interface TokenService {
 

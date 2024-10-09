@@ -1,50 +1,37 @@
 package com.triton.auth.service.impl;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 import com.triton.auth.dto.helper.Tokens;
-import com.triton.auth.model.Role;
-import com.triton.auth.model.User;
+import com.triton.auth.model.RefreshToken;
+import com.triton.auth.repository.RefreshTokenRepository;
 import com.triton.auth.service.TokenService;
 import com.triton.auth.utils.TokenProvider;
+import com.triton.mscommons.exceptions.InvalidJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
 public class TokenServiceImpl implements TokenService {
 
-    private static final Integer REFRESH_TOKEN_EXPIRE_TIME = 6;
     private final TokenProvider tokenProvider;
-    private final LoadingCache<String, String> refreshTokenCache;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Autowired
-    public TokenServiceImpl(TokenProvider tokenProvider) {
+    public TokenServiceImpl(TokenProvider tokenProvider, RefreshTokenRepository refreshTokenRepository) {
         this.tokenProvider = tokenProvider;
-        this.refreshTokenCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(REFRESH_TOKEN_EXPIRE_TIME, TimeUnit.MINUTES)
-                .build(new CacheLoader<String, String>() {
-                    @Override
-                    public String load(@Nonnull String s) {
-                        return StringUtils.EMPTY;
-                    }
-                });
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     @Override
     public Tokens createAuthenticationTokens(String userId, String username, String email) {
         String accessToken = tokenProvider.generateToken(userId, username, Boolean.FALSE);
         String refreshToken = tokenProvider.generateToken(userId, username, Boolean.TRUE);
-        refreshTokenCache.put(email, refreshToken);
+        refreshTokenRepository.save(RefreshToken.builder().refreshToken(refreshToken).email(email).build());
         return new Tokens(accessToken, refreshToken);
     }
 
@@ -58,6 +45,7 @@ public class TokenServiceImpl implements TokenService {
             res.put("accessToken", accessToken);
         } else {
             log.error("Invalid Refresh token");
+            throw InvalidJwtException.build();
         }
         return res;
     }
@@ -68,17 +56,17 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void clearRefreshToken(String key) {
-        refreshTokenCache.invalidate(key);
+    public void clearRefreshToken(String email) {
+        refreshTokenRepository.deleteByEmail(email);
     }
 
-    private String getRefreshToken(String key) {
-        try {
-            return refreshTokenCache.get(key);
-        } catch (Exception e) {
-            log.error("Error getting refresh token from cache!!");
-            return StringUtils.EMPTY;
-        }
+    private String getRefreshToken(String email) {
+        return refreshTokenRepository.findTopByEmailOrderByCreatedAtDesc(email)
+                .map(RefreshToken::getRefreshToken)
+                .orElseGet(() -> {
+                    log.warn("Refresh has been expired from DB !!");
+                    return StringUtils.EMPTY;
+                });
     }
 
 }

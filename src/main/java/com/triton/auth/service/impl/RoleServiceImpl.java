@@ -1,11 +1,11 @@
 package com.triton.auth.service.impl;
 
-import com.triton.auth.dto.enums.ApplicationEnvironment;
-import com.triton.auth.exceptions.ResourceNotFoundException;
-import com.triton.auth.model.Role;
 import com.triton.auth.repository.RoleRepository;
 import com.triton.auth.service.RoleService;
-import com.triton.auth.utils.AuthUtils;
+import com.triton.mscommons.enums.ApplicationEnvironment;
+import com.triton.mscommons.exceptions.ResourceNotFoundException;
+import com.triton.mscommons.model.Role;
+import com.triton.mscommons.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.triton.auth.utils.AuthUtils.isTargetEnvironment;
+import static com.triton.mscommons.utils.CommonUtils.isTargetEnvironment;
+
 
 @Slf4j
 @Service
@@ -53,7 +54,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public String addRole(Role role) {
-        role.setUpdaterId(AuthUtils.getLoggedInUser().getId());
+        role.setUpdaterId(CommonUtils.getLoggedInUser().getId());
         Role savedRole = roleRepository.save(role);
         if (isTargetEnvironment(environment, ApplicationEnvironment.DEV)) {
             return savedRole.getId();

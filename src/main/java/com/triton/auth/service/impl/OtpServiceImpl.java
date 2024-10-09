@@ -1,20 +1,19 @@
 package com.triton.auth.service.impl;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Maps;
 import com.google.common.net.HttpHeaders;
-import com.triton.auth.dto.enums.ApplicationEnvironment;
 import com.triton.auth.dto.helper.Mail;
 import com.triton.auth.dto.helper.Tokens;
 import com.triton.auth.dto.request.OtpAuthRequest;
-import com.triton.auth.exceptions.InvalidInputException;
+import com.triton.auth.model.Otp;
+import com.triton.auth.repository.OtpRepository;
 import com.triton.auth.service.AuthService;
 import com.triton.auth.service.CookieService;
 import com.triton.auth.service.NotificationService;
 import com.triton.auth.service.OtpService;
 import com.triton.auth.utils.Constants;
+import com.triton.mscommons.enums.ApplicationEnvironment;
+import com.triton.mscommons.exceptions.InvalidInputException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -23,46 +22,38 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import static com.triton.auth.utils.AuthUtils.*;
+import static com.triton.mscommons.utils.CommonUtils.generateSixDigitOTP;
+import static com.triton.mscommons.utils.CommonUtils.isTargetEnvironment;
+
 
 @Slf4j
 @Service
 public class OtpServiceImpl implements OtpService {
 
-    private static final Integer EXPIRE_TIME = 5;
     private final Environment environment;
+    private final OtpRepository otpRepository;
     private final AuthService authService;
     private final CookieService cookieService;
     private final NotificationService notificationService;
-    private final LoadingCache<String, String> otpCache;
 
     @Autowired
     public OtpServiceImpl(AuthService authService,
                           NotificationService notificationService,
-                          Environment environment, CookieService cookieService) {
-        this.otpCache = CacheBuilder.newBuilder()
-                .expireAfterWrite(EXPIRE_TIME, TimeUnit.MINUTES)
-                .build(new CacheLoader<String, String>() {
-                    @Override
-                    public String load(@Nonnull String s) {
-                        return StringUtils.EMPTY;
-                    }
-                });
+                          Environment environment, OtpRepository otpRepository, CookieService cookieService) {
         this.authService = authService;
         this.environment = environment;
+        this.otpRepository = otpRepository;
         this.cookieService = cookieService;
         this.notificationService = notificationService;
     }
 
     @Override
     public String sendOtp(String email) {
-        String theOTP = getRandomOTP(email);
-        otpCache.put(email, theOTP);
+        String theOTP = generateSixDigitOTP();
+        otpRepository.save(Otp.builder().otp(theOTP).email(email).build());
         if (isTargetEnvironment(environment, ApplicationEnvironment.DEV)) {
             log.info("The OTP is => {}", theOTP);
             return String.format("The OTP is => %s", theOTP);
@@ -116,17 +107,17 @@ public class OtpServiceImpl implements OtpService {
         return response;
     }
 
-    private String getOtp(String key) {
-        try {
-            return otpCache.get(key);
-        } catch (Exception e) {
-            log.error("Error getting otp from cache!!");
-            return StringUtils.EMPTY;
-        }
+    private String getOtp(String email) {
+        return otpRepository.findTopByEmailOrderByCreatedAtDesc(email)
+                .map(Otp::getOtp)
+                .orElseGet(() -> {
+                    log.warn("Otp has been expired!!");
+                    return StringUtils.EMPTY;
+                });
     }
 
-    private void clearOtp(String key) {
-        otpCache.invalidate(key);
+    private void clearOtp(String email) {
+        otpRepository.deleteByEmail(email);
     }
 
 }

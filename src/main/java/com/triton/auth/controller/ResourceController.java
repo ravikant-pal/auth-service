@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.triton.mscommons.utils.Constants.API_V1;
+
 @Slf4j
 @RestController
-@RequestMapping(Constants.API_V1 + "/resource")
+@RequestMapping(API_V1 + "/resource")
 @Tag(name = "Resource Controller", description = "Info related to Resource.")
 public class ResourceController {
 

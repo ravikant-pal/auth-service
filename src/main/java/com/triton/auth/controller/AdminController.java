@@ -1,8 +1,8 @@
 package com.triton.auth.controller;
 
-import com.triton.auth.annotaion.HasAnyRole;
-import com.triton.auth.exceptions.dto.ExceptionResponse;
 import com.triton.auth.utils.Constants;
+import com.triton.mscommons.annotaion.HasAnyRole;
+import com.triton.mscommons.exceptions.dto.ExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.triton.mscommons.utils.Constants.API_V1;
+
 @Slf4j
 @RestController
-@RequestMapping(Constants.API_V1 + "/admin")
+@RequestMapping(API_V1 + "/admin")
 @Tag(name = "Admin Controller", description = "Info related to Admin.")
 public class AdminController {
 

@@ -1,6 +1,6 @@
 package com.triton.auth.repository;
 
-import com.triton.auth.model.Role;
+import com.triton.mscommons.model.Role;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

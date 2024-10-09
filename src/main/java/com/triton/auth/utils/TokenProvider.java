@@ -1,8 +1,6 @@
 package com.triton.auth.utils;
 
-import com.google.common.collect.Sets;
-import com.triton.auth.model.Role;
-import com.triton.auth.model.User;
+import com.triton.auth.config.AppConfig;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -21,10 +19,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Date;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -95,7 +91,7 @@ public class TokenProvider implements Serializable {
     private String doGenerateToken(String userId, String subject, boolean isRefresh, String refreshToken) {
         Instant now = Instant.now();
         JwtBuilder builder = Jwts.builder()
-                .setHeader(Constants.getTokenHeader())
+                .setHeader(AppConfig.getTokenHeader())
                 .setSubject(subject);
         if (StringUtils.isEmpty(refreshToken)) {
             builder.claim("userId",userId);
@@ -121,11 +117,11 @@ public class TokenProvider implements Serializable {
     private Key generateSecretKey() {
         try {
             SecureRandom secureRandom = new SecureRandom();
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(Constants.HMACAlgorithms.HS512);
-            keyGenerator.init(Constants.HMACAlgorithms.KeySize.Five12, secureRandom);
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(AppConfig.HMACAlgorithms.HS512);
+            keyGenerator.init(AppConfig.HMACAlgorithms.KeySize.Five12, secureRandom);
             SecretKey secretKey = keyGenerator.generateKey();
             byte[] encodedKey = secretKey.getEncoded();
-            return new SecretKeySpec(encodedKey, Constants.HMACAlgorithms.HS512);
+            return new SecretKeySpec(encodedKey, AppConfig.HMACAlgorithms.HS512);
         } catch (NoSuchAlgorithmException e) {
             log.error("No such algorithm", e);
             return null;

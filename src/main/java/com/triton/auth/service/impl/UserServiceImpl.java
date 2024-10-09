@@ -1,13 +1,13 @@
 package com.triton.auth.service.impl;
 
 import com.triton.auth.dto.request.AddRoleRequest;
-import com.triton.auth.exceptions.ResourceNotFoundException;
-import com.triton.auth.model.Role;
 import com.triton.auth.model.User;
 import com.triton.auth.repository.UserRepository;
 import com.triton.auth.service.RoleService;
 import com.triton.auth.service.UserService;
 import com.triton.auth.utils.Constants;
+import com.triton.mscommons.exceptions.ResourceNotFoundException;
+import com.triton.mscommons.model.Role;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         } else {
             log.warn("User with email id => {} does not exists, Creating new ...", email);
             user = new User();
-            user.setName(Constants.DEFAULT_USER_NAME);
+            user.setFirstName(Constants.DEFAULT_USER_NAME);
             user.setEmail(email);
             user.setActive(Boolean.TRUE);
             user.setUsername(email.substring(0, email.indexOf("@")));

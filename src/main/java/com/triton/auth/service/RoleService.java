@@ -1,10 +1,8 @@
 package com.triton.auth.service;
 
-import com.triton.auth.model.Role;
+import com.triton.mscommons.model.Role;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
-import java.util.Set;
 
 public interface RoleService {
     String addRole(Role role);

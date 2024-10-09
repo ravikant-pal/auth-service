@@ -1,7 +1,6 @@
 package com.triton.auth.service.impl;
 
 import com.triton.auth.dto.helper.Mail;
-import com.triton.auth.service.EmailService;
 import com.triton.auth.service.MessageService;
 import com.triton.auth.service.NotificationService;
 import com.triton.auth.service.WhatsappService;
@@ -13,13 +12,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private final EmailService emailService;
     private final MessageService messageService;
     private final WhatsappService whatsappService;
 
     @Autowired
-    public NotificationServiceImpl(EmailService emailService, MessageService messageService, WhatsappService whatsappService) {
-        this.emailService = emailService;
+    public NotificationServiceImpl(MessageService messageService, WhatsappService whatsappService) {
         this.messageService = messageService;
         this.whatsappService = whatsappService;
     }
@@ -27,6 +24,6 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public String sendEmail(Mail mail) {
-        return emailService.sendEmail(mail);
+        return "emailService.sendEmail(mail)";
     }
 }

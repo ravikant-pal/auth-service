@@ -1,9 +1,9 @@
 package com.triton.auth.controller;
 
-import com.triton.auth.exceptions.dto.ExceptionResponse;
-import com.triton.auth.model.Role;
 import com.triton.auth.service.RoleService;
 import com.triton.auth.utils.Constants;
+import com.triton.mscommons.exceptions.dto.ExceptionResponse;
+import com.triton.mscommons.model.Role;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,9 +19,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.triton.mscommons.utils.Constants.API_V1;
+
 @Slf4j
 @RestController
-@RequestMapping(Constants.API_V1 + "/role")
+@RequestMapping(API_V1 + "/role")
 @Tag(name = "Role Controller", description = "Info related to Role.")
 public class RoleController {
 

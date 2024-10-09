@@ -1,6 +1,6 @@
 package com.triton.auth.repository;
 
-import com.triton.auth.model.Permission;
+import com.triton.mscommons.model.Permission;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

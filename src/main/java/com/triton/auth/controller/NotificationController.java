@@ -9,10 +9,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import static com.triton.mscommons.utils.Constants.API_V1;
+
 @Slf4j
 @Validated
 @RestController
-@RequestMapping(Constants.API_V1 + "/notification")
+@RequestMapping(API_V1 + "/notification")
 @Tag(name = "Notification Controller", description = "Info related to Notification.")
 public class NotificationController {
 

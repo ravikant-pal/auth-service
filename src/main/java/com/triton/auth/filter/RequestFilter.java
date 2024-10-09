@@ -1,9 +1,10 @@
 package com.triton.auth.filter;
 
-import com.triton.auth.exceptions.InvalidJwtException;
-import com.triton.auth.exceptions.UnauthorizedAccessException;
+
 import com.triton.auth.service.UserService;
 import com.triton.auth.utils.TokenProvider;
+import com.triton.mscommons.exceptions.InvalidJwtException;
+import com.triton.mscommons.exceptions.UnauthorizedAccessException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,10 +20,12 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
+import static com.triton.auth.config.AppConfig.publicRoutes;
 import static com.triton.auth.utils.Constants.*;
-import static com.triton.auth.utils.Constants.AppConfig.publicRoutes;
-import static com.triton.auth.utils.Constants.SwaggerConfig.API_ENDPOINT;
-import static com.triton.auth.utils.Constants.SwaggerConfig.UI_ENDPOINT;
+import static com.triton.mscommons.utils.Constants.FORWARD_SLASH;
+import static com.triton.mscommons.utils.Constants.LOGGED_IN_USER_KEY;
+import static com.triton.mscommons.utils.Constants.SwaggerConfig.SWAGGER_API_ENDPOINT;
+import static com.triton.mscommons.utils.Constants.SwaggerConfig.SWAGGER_UI_ENDPOINT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
@@ -44,7 +47,7 @@ public class RequestFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
         String currentPath = requestURI.substring(requestURI.lastIndexOf(FORWARD_SLASH));
         try {
-            if (requestURI.startsWith(API_ENDPOINT) || requestURI.startsWith(UI_ENDPOINT) || publicRoutes.contains(currentPath)) {
+            if (requestURI.startsWith(SWAGGER_API_ENDPOINT) || requestURI.startsWith(SWAGGER_UI_ENDPOINT) || publicRoutes.contains(currentPath)) {
                 chain.doFilter(request, response);
             } else {
                 final String header = request.getHeader(AUTHORIZATION);

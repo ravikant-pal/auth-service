@@ -1,7 +1,7 @@
 package com.triton.auth.service.impl;
 
-import com.triton.auth.dto.enums.ApplicationEnvironment;
 import com.triton.auth.service.CookieService;
+import com.triton.mscommons.enums.ApplicationEnvironment;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +12,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 
-import static com.triton.auth.utils.AuthUtils.getCurrentDomain;
-import static com.triton.auth.utils.AuthUtils.isTargetEnvironment;
+import static com.triton.mscommons.utils.CommonUtils.getCurrentDomain;
+import static com.triton.mscommons.utils.CommonUtils.isTargetEnvironment;
+
 
 @Slf4j
 @Service

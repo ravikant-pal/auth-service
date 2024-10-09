@@ -1,10 +1,9 @@
 package com.triton.auth.service;
 
 import com.triton.auth.dto.request.AddRoleRequest;
-import com.triton.auth.model.Role;
 import com.triton.auth.model.User;
+import com.triton.mscommons.model.Role;
 
-import java.util.List;
 import java.util.Set;
 
 public interface UserService {
